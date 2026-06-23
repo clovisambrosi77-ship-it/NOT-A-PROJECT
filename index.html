@@ -5,48 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AirPods 3D</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { height: 100%; }
-    body {
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #000;
-      color: #fff;
-    }
-    #scene { position: fixed; inset: 0; display: block; z-index: 1; }
-    /* Hauteur de défilement qui pilote l'animation 3D */
-    .scroll-space { height: 360vh; pointer-events: none; }
-    /* Texte d'arrière-plan multicolore (derrière le canvas transparent) */
-    .bg-text {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      z-index: 0;
-      transform: translate(-50%, -50%);
-      font-size: 17vw;
-      font-weight: 900;
-      letter-spacing: -0.02em;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      will-change: transform, opacity;
-      background: linear-gradient(90deg,
-        #ff3cac, #ff8a00, #f9d423, #42e695, #2b86c5, #784ba0, #ff3cac);
-      background-size: 300% 100%;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
-      animation: hueShift 7s linear infinite;
-    }
-    @keyframes hueShift {
-      0%   { background-position:   0% 50%; }
-      100% { background-position: 300% 50%; }
-    }
-  </style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { height: 100%; }
+  body {
+    min-height: 100dvh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #000;
+    color: #fff;
+  }
+  #scene { position: fixed; inset: 0; display: block; z-index: 1; }
+  .scroll-space { height: 600vh; pointer-events: none; }
+  
+  .bg-text {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    z-index: 0;
+    transform: translate(-50%, -50%);
+    font-size: 17vw;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    will-change: transform, opacity;
+    background: linear-gradient(90deg, #ff3cac, #ff8a00, #f9d423, #42e695, #2b86c5, #784ba0, #ff3cac);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: hueShift 7s linear infinite;
+  }
+
+  .footer-credit {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: linear-gradient(90deg, #ff3cac, #ff8a00, #f9d423, #42e695, #2b86c5, #784ba0, #ff3cac);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: hueShift 7s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes hueShift {
+    0%   { background-position:  0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+</style>
 </head>
 <body>
-  <div class="bg-text" id="bgText">EMBRACE MUSIC</div>
+  <div class="bg-text" id="bgText">MEET THE NEXT GENERATION OF AIRPODS</div>
   <canvas id="scene"></canvas>
 
   <!-- Hauteur de défilement qui pilote l'animation -->
@@ -303,7 +321,7 @@
         if (p < 0.2) op = p / 0.2;                 // apparition
         else if (p > 0.8) op = Math.max(0, (1 - p) / 0.2); // disparition
         else op = 1;
-        const x = (0.5 - p) * 140; // balayage horizontal (vw)
+        const x = (0.5 - p) * 400; // balayage horizontal (vw)
         bgText.style.opacity = op.toFixed(3);
         bgText.style.transform = `translate(calc(-50% + ${x.toFixed(2)}vw), -50%)`;
       }
@@ -312,5 +330,8 @@
     }
     animate();
   </script>
+  <div class="footer-credit">
+  Made by Clovis Ambrosi
+</div>
 </body>
 </html>
