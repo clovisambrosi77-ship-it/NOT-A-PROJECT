@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AirPods 3D</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { height: 100%; }
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+    }
+    #scene { position: fixed; inset: 0; display: block; z-index: 1; }
+    /* Hauteur de défilement qui pilote l'animation 3D */
+    .scroll-space { height: 360vh; pointer-events: none; }
+    /* Texte d'arrière-plan multicolore (derrière le canvas transparent) */
+    .bg-text {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 0;
+      transform: translate(-50%, -50%);
+      font-size: 17vw;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      will-change: transform, opacity;
+      background: linear-gradient(90deg,
+        #ff3cac, #ff8a00, #f9d423, #42e695, #2b86c5, #784ba0, #ff3cac);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: hueShift 7s linear infinite;
+    }
+    @keyframes hueShift {
+      0%   { background-position:   0% 50%; }
+      100% { background-position: 300% 50%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-text" id="bgText">EMBRACE MUSIC</div>
+  <canvas id="scene"></canvas>
+
+  <!-- Hauteur de défilement qui pilote l'animation -->
+  <div class="scroll-space"></div>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.184.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+    import { USDLoader } from 'three/addons/loaders/USDLoader.js';
+
+    const canvas = document.getElementById('scene');
+
+    // --- Renderer ---
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.1;
+
+    // --- Scene & Camera ---
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 1.5, 7);
+    camera.lookAt(0, 0.1, 0);
+
+    // --- Environment (reflets réalistes) ---
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+    // --- Lights ---
+    const key = new THREE.DirectionalLight(0xffffff, 2.8);
+    key.position.set(5, 8, 6);
+    scene.add(key);
+
+    const fill = new THREE.DirectionalLight(0x9ab4ff, 1.1);
+    fill.position.set(-6, 2, -4);
+    scene.add(fill);
+
+    const rim = new THREE.DirectionalLight(0xffffff, 1.8);
+    rim.position.set(-2, -3, -6);
+    scene.add(rim);
+
+    // Petit accent ponctuel pour faire briller le vernis
+    const spark = new THREE.PointLight(0xffffff, 12, 30);
+    spark.position.set(2.5, 4, 5);
+    scene.add(spark);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+
+    // --- Conteneur du modèle (piloté par le scroll) ---
+    const podsGroup = new THREE.Group();
+    podsGroup.position.y = 0.2;
+    scene.add(podsGroup);
+
+    // Références aux deux écouteurs, renseignées après le chargement
+    let pods = [];
+    let podPivots = [];
+    let podBaseY = [];
+    let podDropLocal = 0; // amplitude de descente (espace local des pods)
+    const TILT_FIX = 0.22; // redressement des écouteurs (radians, ~13°)
+    const SPREAD = 0.30; // écartement latéral des écouteurs (espace local)
+
+    const loadingEl = document.getElementById('loading');
+
+    // --- Chargement du vrai modèle officiel Apple (USDZ avec crate USDC) ---
+    const usdLoader = new USDLoader();
+    usdLoader.load(
+      'airpods_pro_ios13.usdz',
+      (model) => {
+        // Attacher au graphe AVANT de mesurer (les matrices monde ne sont
+        // fiables qu'une fois le modèle dans la scène et mises à jour)
+        podsGroup.add(model);
+
+        // Le modèle USDZ contient un grand maillage proxy invisible (sphère de
+        // tracking AR) qui fausse la boîte englobante. On l'exclut des mesures.
+        const container = model.getObjectByName('tracking_node_placeholder') || model;
+        const excluded = new Set(container.children.filter((o) => o.isMesh));
+        const contentBox = () => {
+          const box = new THREE.Box3();
+          model.traverse((o) => { if (o.isMesh && !excluded.has(o)) box.expandByObject(o); });
+          return box;
+        };
+
+        // Mise à l'échelle d'après la taille réelle du contenu visible
+        model.scale.setScalar(1);
+        scene.updateMatrixWorld(true);
+        const nativeSize = contentBox().getSize(new THREE.Vector3());
+        const maxDim = Math.max(nativeSize.x, nativeSize.y, nativeSize.z) || 1;
+        const targetSize = 3.0;
+        model.scale.setScalar(targetSize / maxDim);
+
+        // Recentrage du contenu visible sur l'origine du conteneur
+        scene.updateMatrixWorld(true);
+        const worldCenter = contentBox().getCenter(new THREE.Vector3());
+        model.position.sub(podsGroup.worldToLocal(worldCenter));
+
+        // Renforcer les reflets de l'environnement sur les matériaux PBR
+        model.traverse((o) => {
+          if (o.isMesh && o.material) {
+            const mats = Array.isArray(o.material) ? o.material : [o.material];
+            mats.forEach((m) => {
+              if ('envMapIntensity' in m) m.envMapIntensity = 1.25;
+              m.needsUpdate = true;
+            });
+          }
+        });
+
+        // Identifier les deux écouteurs : les 2 sous-groupes les plus hauts
+        const groups = container.children.filter((o) =>
+          o.type === 'Object3D' && o.name !== 'Looks' && o.children.some((c) => c.isMesh)
+        );
+        const ranked = groups
+          .map((o) => {
+            const b = new THREE.Box3().setFromObject(o);
+            return { o, cy: (b.min.y + b.max.y) / 2 };
+          })
+          .sort((a, b) => b.cy - a.cy);
+        pods = ranked.slice(0, 2).map((r) => r.o);
+        pods.forEach((p) => { p.matrixAutoUpdate = true; });
+
+        // Envelopper chaque écouteur dans un pivot placé à son propre centre.
+        // Cela permet de corriger l'inclinaison (les écouteurs sont modélisés
+        // très inclinés vers l'extérieur) et de les faire descendre bien droit.
+        scene.updateMatrixWorld(true);
+        podPivots = pods.map((pod) => {
+          const worldCenter = new THREE.Box3().setFromObject(pod).getCenter(new THREE.Vector3());
+          const localCenter = container.worldToLocal(worldCenter.clone());
+          const pivot = new THREE.Group();
+          pivot.position.copy(localCenter);
+          container.add(pivot);
+          pivot.add(pod);
+          pod.position.sub(localCenter); // garder l'écouteur exactement en place
+          return pivot;
+        });
+
+        // Redresser : ramener le sommet des écouteurs vers le centre (mirror G/D)
+        // pour réduire l'écartement « en V » et obtenir un placement naturel.
+        // Et écarter légèrement les deux écouteurs pour qu'ils s'alignent sur
+        // leurs puits respectifs (sinon ils paraissent trop serrés au centre).
+        podPivots.forEach((pivot) => {
+          const side = Math.sign(pivot.position.x) || 1; // +1 droite, -1 gauche
+          pivot.rotation.z = side * TILT_FIX;
+          pivot.position.x += side * SPREAD;
+        });
+
+        podBaseY = podPivots.map((p) => p.position.y);
+
+        // Amplitude de descente : on veut que les écouteurs se logent (hover)
+        // pile dans les puits, stems plongés, bulbes affleurant le bord.
+        const caseBase = ranked[ranked.length - 1].o; // groupe le plus bas = boîtier
+        scene.updateMatrixWorld(true);
+        const caseBox = new THREE.Box3().setFromObject(caseBase);
+        const caseRimY = caseBox.max.y;
+        const caseFloorY = caseBox.min.y;
+        const innerDepth = caseRimY - caseFloorY;
+        let podBottomY = Infinity;
+        pods.forEach((p) => {
+          podBottomY = Math.min(podBottomY, new THREE.Box3().setFromObject(p).min.y);
+        });
+        // Cible : bas des écouteurs à ~55% de la profondeur sous le bord
+        const targetBottomY = caseRimY - 0.55 * innerDepth;
+        const worldDrop = Math.max(0, podBottomY - targetBottomY);
+        // Conversion monde -> espace local des pivots (le modèle est mis à l'échelle)
+        const parentScale = new THREE.Vector3();
+        container.matrixWorld.decompose(new THREE.Vector3(), new THREE.Quaternion(), parentScale);
+        podDropLocal = worldDrop / (parentScale.y || 1);
+
+        if (loadingEl) loadingEl.style.display = 'none';
+      },
+      (xhr) => {
+        if (loadingEl && xhr.total) {
+          const pct = Math.round((xhr.loaded / xhr.total) * 100);
+          loadingEl.textContent = `Chargement du modèle… ${pct}%`;
+        }
+      },
+      (err) => {
+        console.error('Erreur de chargement du modèle USDZ :', err);
+        if (loadingEl) loadingEl.textContent = 'Impossible de charger le modèle 3D.';
+      }
+    );
+
+    // --- Ombre de contact douce (dégradé radial) ---
+    function makeShadowTexture() {
+      const size = 256;
+      const cv = document.createElement('canvas');
+      cv.width = cv.height = size;
+      const ctx = cv.getContext('2d');
+      const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+      grad.addColorStop(0, 'rgba(0,0,0,0.55)');
+      grad.addColorStop(0.45, 'rgba(0,0,0,0.28)');
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, size, size);
+      return new THREE.CanvasTexture(cv);
+    }
+    const shadowGeo = new THREE.PlaneGeometry(7, 7);
+    const shadowMat = new THREE.MeshBasicMaterial({
+      map: makeShadowTexture(), transparent: true, depthWrite: false,
+    });
+    const shadow = new THREE.Mesh(shadowGeo, shadowMat);
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.scale.set(1, 1.35, 1);
+    shadow.position.y = -2;
+    scene.add(shadow);
+
+    // --- Progression du défilement (pilote l'animation) ---
+    let scrollTarget = 0;
+    let scrollEased = 0;
+    const bgText = document.getElementById('bgText');
+
+    function computeProgress() {
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      return max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    }
+    window.addEventListener('scroll', () => { scrollTarget = computeProgress(); }, { passive: true });
+    scrollTarget = computeProgress();
+
+    // --- Resize ---
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // --- Animation loop (pilotée par le scroll) ---
+    function animate() {
+      requestAnimationFrame(animate);
+
+      // Lissage de la progression
+      scrollEased += (scrollTarget - scrollEased) * 0.09;
+
+      // Les écouteurs descendent dans le boîtier
+      const drop = scrollEased * podDropLocal;
+      for (let i = 0; i < podPivots.length; i++) {
+        podPivots[i].position.y = podBaseY[i] - drop;
+      }
+
+      // Le boîtier (et les écouteurs) effectuent un tour complet (360°)
+      podsGroup.rotation.y = scrollEased * Math.PI * 2;
+
+      // Texte d'arrière-plan : invisible au début et à la fin, il traverse
+      // l'écran (et passe derrière les AirPods) pendant le défilement.
+      if (bgText) {
+        const p = scrollEased;
+        let op;
+        if (p < 0.2) op = p / 0.2;                 // apparition
+        else if (p > 0.8) op = Math.max(0, (1 - p) / 0.2); // disparition
+        else op = 1;
+        const x = (0.5 - p) * 140; // balayage horizontal (vw)
+        bgText.style.opacity = op.toFixed(3);
+        bgText.style.transform = `translate(calc(-50% + ${x.toFixed(2)}vw), -50%)`;
+      }
+
+      renderer.render(scene, camera);
+    }
+    animate();
+  </script>
+</body>
+</html>
