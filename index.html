@@ -6,9 +6,11 @@
   <title>AirPods 3D</title>
   <style>
   :root {
-    --accent-a: #ff3cac;
-    --accent-b: #42e695;
-    --accent-c: #2b86c5;
+    --accent-a: #ff4fd8;
+    --accent-b: #8b5cff;
+    --accent-c: #38bdf8;
+    --accent-d: #6ee7ff;
+    --ai-gradient: linear-gradient(90deg, #ff4fd8, #b45cff, #6f7dff, #38bdf8, #6ee7ff, #ff4fd8);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -87,7 +89,7 @@
     opacity: 0;
     filter: blur(var(--text-blur, 0px));
     will-change: transform, opacity, filter;
-    background: linear-gradient(90deg, var(--accent-a), #ff8a00, #f9d423, var(--accent-b), var(--accent-c), #784ba0, var(--accent-a));
+    background: var(--ai-gradient);
     background-size: 300% 100%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -167,8 +169,8 @@
     height: 100%;
     transform: scaleX(var(--progress, 0));
     transform-origin: left center;
-    background: linear-gradient(90deg, var(--accent-a), var(--accent-b), var(--accent-c));
-    box-shadow: 0 0 22px rgba(66, 230, 149, 0.7);
+    background: var(--ai-gradient);
+    box-shadow: 0 0 22px rgba(111, 125, 255, 0.65);
     will-change: transform;
   }
 
@@ -181,7 +183,7 @@
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.16em;
-    background: linear-gradient(90deg, #ff3cac, #ff8a00, #f9d423, #42e695, #2b86c5, #784ba0, #ff3cac);
+    background: var(--ai-gradient);
     background-size: 300% 100%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -206,6 +208,7 @@
     padding: clamp(84px, 11vw, 150px) clamp(20px, 6vw, 88px);
     display: grid;
     align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .reveal {
@@ -266,6 +269,7 @@
     line-height: 0.98;
     letter-spacing: 0;
     font-weight: 850;
+    text-wrap: balance;
   }
 
   .story-copy p,
@@ -279,43 +283,52 @@
 
   .feature-list {
     margin-top: 34px;
-    display: grid;
-    gap: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .feature-row {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 14px;
+    gap: 10px;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.045);
     color: rgba(255, 255, 255, 0.86);
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 750;
-    transition: transform 260ms ease, color 260ms ease;
+    backdrop-filter: blur(14px);
+    transition: transform 260ms ease, color 260ms ease, border-color 260ms ease, background 260ms ease;
   }
 
   .feature-row:hover {
     color: #fff;
-    transform: translateX(4px);
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.075);
   }
 
   .feature-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
-    box-shadow: 0 0 20px rgba(66, 230, 149, 0.7);
+    background: linear-gradient(135deg, var(--accent-a), var(--accent-c));
+    box-shadow: 0 0 20px rgba(139, 92, 255, 0.7);
     flex: 0 0 auto;
   }
 
   .visual-panel {
     position: relative;
     min-height: clamp(420px, 52vw, 620px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
     overflow: hidden;
     background:
-      radial-gradient(circle at 50% 34%, rgba(255, 255, 255, 0.16), transparent 13rem),
-      linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.02));
+      radial-gradient(circle at 50% 34%, rgba(255, 255, 255, 0.11), transparent 13rem),
+      linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 28px 90px rgba(0, 0, 0, 0.42);
     transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 700ms cubic-bezier(0.16, 1, 0.3, 1);
   }
@@ -374,30 +387,196 @@
     display: grid;
     place-items: center;
     padding: clamp(24px, 4vw, 48px);
-    background: #fff;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(255, 79, 216, 0.16), transparent 18rem),
+      radial-gradient(circle at 72% 36%, rgba(56, 189, 248, 0.12), transparent 16rem),
+      linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
   }
 
-  .health-icon {
-    width: min(640px, 96%);
-    height: auto;
-    display: block;
-    filter: drop-shadow(0 28px 70px rgba(255, 45, 85, 0.18));
+  .health-card {
+    position: relative;
+    width: min(520px, 94%);
+    min-height: 430px;
+    padding: clamp(24px, 4vw, 38px);
+    border-radius: 32px;
+    background:
+      radial-gradient(circle at 18% 12%, rgba(255, 79, 216, 0.14), transparent 16rem),
+      radial-gradient(circle at 86% 18%, rgba(56, 189, 248, 0.12), transparent 14rem),
+      linear-gradient(180deg, #fbfbfd, #f2f2f6);
+    color: #111;
+    box-shadow:
+      0 34px 95px rgba(0, 0, 0, 0.38),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    overflow: hidden;
+  }
+
+  .health-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+    pointer-events: none;
+  }
+
+  .health-card__top {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .health-app-icon {
+    position: relative;
+    width: 78px;
+    height: 78px;
+    border-radius: 22px;
+    background: #fff;
+    box-shadow:
+      inset 0 0 0 2px rgba(0, 0, 0, 0.08),
+      0 14px 28px rgba(139, 92, 255, 0.22);
+    flex: 0 0 auto;
     animation: healthFloat 6s ease-in-out infinite;
+  }
+
+  .health-app-icon::before,
+  .health-app-icon::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .health-app-icon::before {
+    content: "\2665";
+    display: grid;
+    place-items: center;
+    background: linear-gradient(180deg, #ff4fd8, #8b5cff 72%, #38bdf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 48px;
+    line-height: 1;
+    transform: translateY(2px);
+  }
+
+  .health-app-icon::after {
+    content: none;
+  }
+
+  .health-card__label {
+    color: rgba(0, 0, 0, 0.46);
+    font-size: 12px;
+    font-weight: 850;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .health-card__title {
+    margin-top: 4px;
+    font-size: clamp(28px, 4.5vw, 46px);
+    font-weight: 850;
+    line-height: 0.95;
+    letter-spacing: 0;
+  }
+
+  .heart-readout {
+    position: relative;
+    z-index: 1;
+    margin-top: 42px;
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 18px;
+    align-items: end;
+  }
+
+  .bpm {
+    display: grid;
+    gap: 6px;
+  }
+
+  .bpm strong {
+    font-size: clamp(68px, 8vw, 108px);
+    line-height: 0.85;
+    letter-spacing: 0;
+  }
+
+  .bpm span {
+    color: rgba(0, 0, 0, 0.48);
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .pulse-line {
+    width: 100%;
+    height: 112px;
+  }
+
+  .pulse-line path {
+    fill: none;
+    stroke: #8b5cff;
+    stroke-width: 9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 8px 16px rgba(139, 92, 255, 0.24));
+    stroke-dasharray: 440;
+    stroke-dashoffset: 440;
+    animation: drawPulse 2.8s ease-in-out infinite;
+  }
+
+  .health-metrics {
+    position: relative;
+    z-index: 1;
+    margin-top: 34px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .health-metric {
+    min-height: 92px;
+    padding: 16px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.74);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  }
+
+  .health-metric span {
+    display: block;
+    color: rgba(0, 0, 0, 0.48);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .health-metric strong {
+    display: block;
+    margin-top: 8px;
+    font-size: 24px;
+    line-height: 1;
   }
 
   .sound-panel {
     display: grid;
-    gap: 14px;
+    gap: 13px;
     align-content: center;
     padding: clamp(24px, 5vw, 56px);
+    background:
+      radial-gradient(circle at 50% 50%, rgba(111, 125, 255, 0.18), transparent 18rem),
+      radial-gradient(circle at 18% 24%, rgba(255, 79, 216, 0.1), transparent 18rem),
+      radial-gradient(circle at 80% 65%, rgba(56, 189, 248, 0.12), transparent 16rem),
+      linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.018));
   }
 
   .wave {
     height: clamp(56px, 8vw, 86px);
     border-radius: 999px;
     background:
-      linear-gradient(90deg, rgba(255, 60, 172, 0.08), rgba(66, 230, 149, 0.38), rgba(43, 134, 197, 0.12)),
-      repeating-linear-gradient(90deg, transparent 0 14px, rgba(255, 255, 255, 0.18) 14px 16px);
+      linear-gradient(90deg, rgba(255, 79, 216, 0.22), rgba(139, 92, 255, 0.44), rgba(56, 189, 248, 0.26)),
+      repeating-linear-gradient(90deg, transparent 0 18px, rgba(255, 255, 255, 0.12) 18px 20px);
     transform: scaleX(var(--wave-scale, 1));
     transform-origin: center;
     opacity: var(--wave-opacity, 0.8);
@@ -417,17 +596,30 @@
     margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
+    gap: 16px;
   }
 
   .spec-card {
     min-height: 260px;
     padding: clamp(24px, 3vw, 34px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.11);
     border-radius: 8px;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.035));
     box-shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
     transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1), border-color 420ms ease, background 420ms ease;
+    overflow: hidden;
+  }
+
+  .spec-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: var(--ai-gradient);
+    opacity: 0.62;
   }
 
   .spec-card:hover {
@@ -443,7 +635,7 @@
     font-weight: 900;
     line-height: 0.9;
     letter-spacing: 0;
-    background: linear-gradient(90deg, #fff, rgba(255, 255, 255, 0.5));
+    background: linear-gradient(90deg, #fff, var(--accent-b), var(--accent-c));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -482,23 +674,23 @@
     aspect-ratio: 1;
     border-radius: 25%;
     background:
-      radial-gradient(circle at 82% 14%, rgba(255, 0, 105, 0.95), transparent 26%),
-      radial-gradient(circle at 50% 96%, rgba(0, 174, 255, 0.95), transparent 28%),
-      radial-gradient(circle at 14% 20%, rgba(255, 184, 0, 0.95), transparent 30%),
-      linear-gradient(135deg, #ffb000 0%, #ff4d29 25%, #ff006e 48%, #d66cff 72%, #12b8ff 100%);
+      radial-gradient(circle at 82% 14%, rgba(255, 79, 216, 0.88), transparent 26%),
+      radial-gradient(circle at 50% 96%, rgba(56, 189, 248, 0.88), transparent 28%),
+      radial-gradient(circle at 14% 20%, rgba(139, 92, 255, 0.72), transparent 30%),
+      linear-gradient(135deg, #ff4fd8 0%, #b45cff 26%, #6f7dff 52%, #38bdf8 76%, #6ee7ff 100%);
     display: grid;
     place-items: center;
     filter: saturate(1.18);
     box-shadow:
       0 0 70px rgba(255, 79, 216, 0.3),
-      0 0 110px rgba(18, 184, 255, 0.22),
+      0 0 110px rgba(56, 189, 248, 0.22),
       inset 0 1px 0 rgba(255, 255, 255, 0.28);
     overflow: hidden;
     animation: siriIconFloat 7s ease-in-out infinite;
   }
 
   .siri-orb::before {
-    content: "∞";
+    content: "\221e";
     position: relative;
     z-index: 1;
     color: #fff;
@@ -552,6 +744,28 @@
     width: min(820px, 100%);
   }
 
+  .ecosystem-strip {
+    width: min(760px, 100%);
+    margin: 34px auto 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .ecosystem-item {
+    min-height: 82px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.045);
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 13px;
+    font-weight: 820;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
   .cta-row {
     margin-top: 34px;
     display: flex;
@@ -579,16 +793,20 @@
   .cta:hover {
     transform: translateY(-2px);
     filter: brightness(1.08);
-    box-shadow: 0 14px 38px rgba(66, 230, 149, 0.18);
+    box-shadow: 0 14px 38px rgba(139, 92, 255, 0.22);
   }
 
   .cta--primary {
     border-color: transparent;
-    background: linear-gradient(90deg, var(--accent-a), var(--accent-b), var(--accent-c));
+    background: var(--ai-gradient);
     color: #050505;
   }
 
   @media (max-width: 720px) {
+    body::after {
+      opacity: 0.09;
+      background-size: 56px 56px;
+    }
     .hero-copy {
       top: 22px;
     }
@@ -604,8 +822,25 @@
     .story-copy h2,
     .siri-copy h2,
     .final-section h2 {
-      font-size: clamp(42px, 13vw, 58px);
-      line-height: 0.96;
+      font-size: clamp(36px, 10.8vw, 48px);
+      line-height: 1;
+    }
+    .story-copy p,
+    .siri-copy p,
+    .final-section p {
+      font-size: 16px;
+      line-height: 1.45;
+    }
+    .feature-list,
+    .siri-pills {
+      margin-top: 24px;
+      gap: 8px;
+    }
+    .feature-row,
+    .siri-pill {
+      min-height: 36px;
+      padding: 0 12px;
+      font-size: 13px;
     }
     .footer-credit {
       display: none;
@@ -615,20 +850,86 @@
     .siri-grid,
     .spec-grid {
       grid-template-columns: 1fr;
+      gap: 30px;
     }
     .story-section,
     .siri-section,
     .final-section {
       min-height: auto;
+      padding: 54px 23px;
     }
     .visual-panel {
-      min-height: 360px;
+      min-height: auto;
+      border-radius: 8px;
     }
     .story-grid--reverse .story-copy {
       order: -1;
     }
+    .siri-copy {
+      order: -1;
+    }
+    .siri-orb {
+      width: min(310px, 82vw);
+      margin: 0 auto;
+    }
+    .health-panel,
+    .sound-panel {
+      padding: 18px;
+    }
+    .health-card {
+      width: 100%;
+      min-height: 330px;
+      padding: 20px;
+      border-radius: 26px;
+    }
+    .health-app-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 17px;
+    }
+    .health-app-icon::before {
+      font-size: 36px;
+    }
+    .health-card__label {
+      font-size: 10px;
+    }
+    .health-card__title {
+      font-size: 27px;
+    }
+    .heart-readout {
+      margin-top: 24px;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      align-items: start;
+    }
+    .bpm strong {
+      font-size: 64px;
+    }
+    .pulse-line {
+      height: 72px;
+    }
+    .health-metrics {
+      margin-top: 18px;
+      grid-template-columns: 1fr;
+    }
+    .health-metric {
+      min-height: 68px;
+      padding: 14px;
+    }
     .spec-card {
       min-height: 210px;
+    }
+    .ecosystem-strip {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .ecosystem-item {
+      min-height: 70px;
+      font-size: 12px;
+    }
+    .cta {
+      min-height: 44px;
+      padding: 0 18px;
     }
   }
 
@@ -639,7 +940,13 @@
 
   @keyframes healthFloat {
     0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-10px) scale(1.015); }
+    50% { transform: translateY(-6px) scale(1.02); }
+  }
+
+  @keyframes drawPulse {
+    0% { stroke-dashoffset: 440; opacity: 0.38; }
+    42%, 68% { stroke-dashoffset: 0; opacity: 1; }
+    100% { stroke-dashoffset: -440; opacity: 0.38; }
   }
 
   @keyframes waveBreathe {
@@ -708,7 +1015,34 @@
           </div>
         </div>
         <div class="visual-panel health-panel reveal delay-2" aria-hidden="true">
-          <img class="health-icon" src="ah.png" alt="" />
+          <div class="health-card">
+            <div class="health-card__top">
+              <div class="health-app-icon"></div>
+              <div>
+                <div class="health-card__label">Works with</div>
+                <div class="health-card__title">Apple Health</div>
+              </div>
+            </div>
+            <div class="heart-readout">
+              <div class="bpm">
+                <strong>78</strong>
+                <span>bpm</span>
+              </div>
+              <svg class="pulse-line" viewBox="0 0 320 120" role="img" aria-label="Heart rate line">
+                <path d="M8 68 H72 L92 34 L120 94 L148 16 L184 70 H312" />
+              </svg>
+            </div>
+            <div class="health-metrics">
+              <div class="health-metric">
+                <span>Workout</span>
+                <strong>Live tracking</strong>
+              </div>
+              <div class="health-metric">
+                <span>Hearing</span>
+                <strong>Protected</strong>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -779,6 +1113,12 @@
         <span class="section-kicker">AirPods Pro 3</span>
         <h2 id="final-title">Made for daily life.</h2>
         <p>Audio, santé et intelligence dans un format qui disparaît dès qu’il commence à fonctionner.</p>
+        <div class="ecosystem-strip" aria-label="Apple ecosystem compatibility">
+          <div class="ecosystem-item">iPhone</div>
+          <div class="ecosystem-item">Mac</div>
+          <div class="ecosystem-item">iPad</div>
+          <div class="ecosystem-item">Watch</div>
+        </div>
         <div class="cta-row">
           <a class="cta cta--primary" href="https://www.apple.com/fr/shop/buy-airpods/airpods-pro-3" target="_blank" rel="noopener noreferrer">View pricing</a>
         </div>
@@ -802,6 +1142,11 @@
     const canvas = document.getElementById('scene');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    function getRenderPixelRatio() {
+      const cap = window.innerWidth < 720 ? 1.15 : 1.5;
+      return Math.min(window.devicePixelRatio || 1, cap);
+    }
+
     // --- Renderer ---
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -809,7 +1154,7 @@
       alpha: true,
       powerPreference: 'high-performance',
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(getRenderPixelRatio());
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -1038,6 +1383,7 @@
     let scrollTarget = 0;
     let scrollEased = 0;
     let lastFrame = performance.now();
+    let heroRenderSettled = false;
     const bgText = document.getElementById('bgText');
     const heroCopy = document.getElementById('heroCopy');
     const chapter = document.getElementById('chapter');
@@ -1072,6 +1418,7 @@
 
     // --- Resize ---
     window.addEventListener('resize', () => {
+      renderer.setPixelRatio(getRenderPixelRatio());
       renderer.setSize(window.innerWidth, window.innerHeight);
       setStageForViewport();
       scrollTarget = computeProgress();
@@ -1175,7 +1522,12 @@
         bgText.style.setProperty('--text-blur', `${(Math.abs(p - 0.5) * 5).toFixed(2)}px`);
       }
 
-      renderer.render(scene, camera);
+      const heroSettling = Math.abs(scrollTarget - scrollEased) > 0.002;
+      if (scrollTarget < 0.999) heroRenderSettled = false;
+      if (!heroRenderSettled || heroSettling) {
+        renderer.render(scene, camera);
+        if (scrollTarget >= 0.999 && !heroSettling) heroRenderSettled = true;
+      }
     }
     animate();
   </script>
