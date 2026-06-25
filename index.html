@@ -11,7 +11,7 @@
     --accent-c: #38bdf8;
     --accent-d: #6ee7ff;
     --accent-warm: #ff9f0a;
-    --ai-gradient: linear-gradient(90deg, #ff4fd8, #b45cff, #6f7dff, #38bdf8, #6ee7ff, #ff9f0a, #ff4fd8);
+    --ai-gradient: linear-gradient(90deg, #ff4fd8 0%, #b45cff 16%, #6f7dff 31%, #38bdf8 48%, #6ee7ff 63%, #ff9f0a 78%, #ff4fd8 100%);
   }
 
   @font-face {
@@ -170,12 +170,12 @@
     filter: blur(var(--text-blur, 0px));
     will-change: transform, opacity, filter;
     background: var(--ai-gradient);
-    background-size: 300% 100%;
+    background-size: 260% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    animation: hueShift 7s linear infinite;
+    animation: aiGradientDrift 12s ease-in-out infinite alternate;
   }
 
   .hero-copy {
@@ -220,13 +220,13 @@
     position: relative;
     display: inline-block;
     background: var(--ai-gradient);
-    background-size: 220% 100%;
+    background-size: 260% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
     filter: drop-shadow(0 0 16px rgba(139, 92, 255, 0.2));
-    animation: hueShift 7s linear infinite;
+    animation: aiGradientDrift 12s ease-in-out infinite alternate;
   }
 
   .ai-highlight::after {
@@ -238,6 +238,7 @@
     height: 0.16em;
     border-radius: 999px;
     background: var(--ai-gradient);
+    background-size: 260% 100%;
     opacity: 0.28;
     filter: blur(8px);
     z-index: -1;
@@ -363,12 +364,12 @@
     text-transform: uppercase;
     letter-spacing: 0.16em;
     background: var(--ai-gradient);
-    background-size: 300% 100%;
+    background-size: 260% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
-    animation: hueShift 7s linear infinite;
+    animation: aiGradientDrift 12s ease-in-out infinite alternate;
     pointer-events: none;
     opacity: var(--chrome-opacity, 1);
     transition: opacity 220ms ease;
@@ -1454,9 +1455,9 @@
     }
   }
 
-  @keyframes hueShift {
-    0%   { background-position:  0% 50%; }
-    100% { background-position: 300% 50%; }
+  @keyframes aiGradientDrift {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
   }
 
   @keyframes hintDrop {
