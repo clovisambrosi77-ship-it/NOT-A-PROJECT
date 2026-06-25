@@ -214,21 +214,26 @@
 
   .reveal {
     opacity: 0;
-    transform: translateY(34px);
-    transition: opacity 900ms cubic-bezier(0.16, 1, 0.3, 1), transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translate3d(var(--reveal-x, 0), var(--reveal-y, 24px), 0) scale(var(--reveal-scale, 1));
+    transition: opacity 760ms cubic-bezier(0.16, 1, 0.3, 1), transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
     transition-delay: var(--reveal-delay, 0ms);
     will-change: opacity, transform;
   }
 
   .reveal.is-visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0) scale(1);
   }
 
-  .delay-1 { --reveal-delay: 80ms; }
-  .delay-2 { --reveal-delay: 140ms; }
-  .delay-3 { --reveal-delay: 180ms; }
-  .delay-4 { --reveal-delay: 240ms; }
+  .slide-left { --reveal-x: -28px; --reveal-y: 8px; }
+  .slide-right { --reveal-x: 28px; --reveal-y: 8px; }
+  .slide-up { --reveal-y: 28px; }
+  .slide-soft { --reveal-y: 18px; --reveal-scale: 0.99; }
+
+  .delay-1 { --reveal-delay: 60ms; }
+  .delay-2 { --reveal-delay: 110ms; }
+  .delay-3 { --reveal-delay: 150ms; }
+  .delay-4 { --reveal-delay: 190ms; }
 
   .story-grid {
     width: min(1160px, 100%);
@@ -265,6 +270,7 @@
 
   .story-copy h2,
   .siri-copy h2,
+  .companion-copy h2,
   .final-section h2 {
     font-size: clamp(42px, 5.6vw, 82px);
     line-height: 0.98;
@@ -275,6 +281,7 @@
 
   .story-copy p,
   .siri-copy p,
+  .companion-copy p,
   .final-section p {
     margin-top: 22px;
     color: rgba(255, 255, 255, 0.72);
@@ -745,6 +752,93 @@
     font-weight: 800;
   }
 
+  .companion-section {
+    min-height: 92vh;
+    padding: clamp(90px, 12vw, 165px) clamp(20px, 6vw, 88px);
+    display: grid;
+    align-items: center;
+    background: #000;
+  }
+
+  .companion-grid {
+    width: min(1160px, 100%);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
+    gap: clamp(42px, 8vw, 108px);
+    align-items: center;
+  }
+
+  .iphone-stage {
+    position: relative;
+    min-height: clamp(500px, 54vw, 640px);
+    display: grid;
+    place-items: center;
+  }
+
+  .iphone-stage::before {
+    content: "";
+    position: absolute;
+    width: min(460px, 86%);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.11), transparent 62%);
+    filter: blur(22px);
+    opacity: 0.72;
+  }
+
+  .iphone-frame {
+    position: relative;
+    z-index: 1;
+    width: min(315px, 72vw);
+    aspect-ratio: 0.49;
+    padding: 8px;
+    border-radius: 44px;
+    background: linear-gradient(145deg, #f4f4f5, #3b3b3d 55%, #121214);
+    box-shadow:
+      0 34px 90px rgba(0, 0, 0, 0.48),
+      0 0 0 1px rgba(255, 255, 255, 0.12);
+  }
+
+  .iphone-screen {
+    position: relative;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 36px;
+    background:
+      radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.24), transparent 25%),
+      linear-gradient(180deg, #161618, #050506 72%);
+  }
+
+  .iphone-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .iphone-screen--photo {
+    background: #050506;
+  }
+
+  .handoff-list {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .handoff-item {
+    min-height: 72px;
+    padding: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 13px;
+    font-weight: 820;
+  }
+
   .final-section {
     min-height: 82vh;
     padding: clamp(96px, 12vw, 170px) clamp(20px, 6vw, 88px);
@@ -817,6 +911,14 @@
   }
 
   @media (max-width: 720px) {
+    .slide-left,
+    .slide-right {
+      --reveal-x: 0;
+      --reveal-y: 34px;
+    }
+    .slide-up {
+      --reveal-y: 34px;
+    }
     body::after {
       opacity: 0.09;
       background-size: 56px 56px;
@@ -835,12 +937,14 @@
     }
     .story-copy h2,
     .siri-copy h2,
+    .companion-copy h2,
     .final-section h2 {
       font-size: clamp(34px, 10.2vw, 46px);
       line-height: 1;
     }
     .story-copy p,
     .siri-copy p,
+    .companion-copy p,
     .final-section p {
       font-size: 16px;
       line-height: 1.45;
@@ -862,6 +966,7 @@
     .story-grid,
     .story-grid--reverse,
     .siri-grid,
+    .companion-grid,
     .spec-grid {
       grid-template-columns: 1fr;
       gap: 24px;
@@ -869,6 +974,7 @@
     }
     .story-section,
     .siri-section,
+    .companion-section,
     .final-section {
       min-height: auto;
       padding: 62px 20px;
@@ -876,6 +982,7 @@
     }
     .story-copy,
     .siri-copy,
+    .companion-copy,
     .final-inner {
       max-width: 420px;
       margin-inline: auto;
@@ -886,6 +993,7 @@
     }
     .story-copy p,
     .siri-copy p,
+    .companion-copy p,
     .final-section p {
       margin-top: 16px;
     }
@@ -914,6 +1022,31 @@
     .siri-orb {
       width: min(250px, 72vw);
       margin: 0 auto;
+    }
+    .companion-copy {
+      order: -1;
+    }
+    .iphone-stage {
+      min-height: 420px;
+    }
+    .iphone-frame {
+      width: min(230px, 66vw);
+      padding: 8px;
+      border-radius: 38px;
+    }
+    .iphone-screen {
+      border-radius: 31px;
+    }
+    .handoff-list {
+      margin-top: 24px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .handoff-item {
+      min-height: 68px;
+      padding: 12px 10px;
+      font-size: 12px;
+      line-height: 1.22;
     }
     .health-panel,
     .sound-panel {
@@ -1017,6 +1150,7 @@
     }
     .story-section,
     .siri-section,
+    .companion-section,
     .final-section {
       padding-inline: 18px;
     }
@@ -1106,16 +1240,16 @@
   <main class="product-story">
     <section class="story-section" aria-labelledby="design-title">
       <div class="story-grid">
-        <div class="story-copy reveal">
+        <div class="story-copy reveal slide-left">
           <span class="section-kicker">Health</span>
           <h2 id="design-title">Listen to your body.</h2>
           <p>Un suivi santé discret, pensé pour accompagner l’effort sans interrompre l’écoute.</p>
           <div class="feature-list">
-            <div class="feature-row"><span class="feature-dot"></span><span>Fréquence cardiaque</span></div>
-            <div class="feature-row"><span class="feature-dot"></span><span>Protection auditive</span></div>
+            <div class="feature-row reveal slide-up delay-1"><span class="feature-dot"></span><span>Fréquence cardiaque</span></div>
+            <div class="feature-row reveal slide-up delay-2"><span class="feature-dot"></span><span>Protection auditive</span></div>
           </div>
         </div>
-        <div class="visual-panel health-panel reveal delay-2" aria-hidden="true">
+        <div class="visual-panel health-panel reveal slide-right delay-2" aria-hidden="true">
           <div class="health-card">
             <div class="health-card__top">
               <div class="health-app-icon"></div>
@@ -1150,42 +1284,42 @@
 
     <section class="story-section" aria-labelledby="sound-title">
       <div class="story-grid story-grid--reverse">
-        <div class="visual-panel sound-panel reveal delay-2" aria-hidden="true">
+        <div class="visual-panel sound-panel reveal slide-left delay-2" aria-hidden="true">
           <div class="wave"></div>
           <div class="wave"></div>
           <div class="wave"></div>
           <div class="wave"></div>
           <div class="wave"></div>
         </div>
-        <div class="story-copy reveal delay-3">
+        <div class="story-copy reveal slide-right delay-3">
           <span class="section-kicker">Audio</span>
           <h2 id="sound-title">More sound. Less noise.</h2>
           <p>Une scène plus large, des détails plus nets, et un silence qui laisse respirer la musique.</p>
           <div class="feature-list">
-            <div class="feature-row"><span class="feature-dot"></span><span>Réduction de bruit active</span></div>
-            <div class="feature-row"><span class="feature-dot"></span><span>Audio spatial personnalisé</span></div>
+            <div class="feature-row reveal slide-up delay-1"><span class="feature-dot"></span><span>Réduction de bruit active</span></div>
+            <div class="feature-row reveal slide-up delay-2"><span class="feature-dot"></span><span>Audio spatial personnalisé</span></div>
           </div>
         </div>
       </div>
     </section>
 
     <section class="story-section" aria-labelledby="case-title">
-      <div class="story-copy story-copy--wide reveal">
+      <div class="story-copy story-copy--wide reveal slide-left">
         <span class="section-kicker">Everyday</span>
         <h2 id="case-title">Ready all day.</h2>
       </div>
       <div class="spec-grid">
-        <article class="spec-card reveal delay-1">
+        <article class="spec-card reveal slide-up delay-1">
           <span class="spec-value">8h</span>
           <h3>Autonomie</h3>
           <p>Une écoute plus longue, sans y penser.</p>
         </article>
-        <article class="spec-card reveal delay-2">
+        <article class="spec-card reveal slide-up delay-2">
           <span class="spec-value">IP57</span>
           <h3>Résistance</h3>
           <p>Prêts pour le sport, la pluie et les journées chargées.</p>
         </article>
-        <article class="spec-card reveal delay-4">
+        <article class="spec-card reveal slide-up delay-4">
           <span class="spec-value">USB-C</span>
           <h3>Recharge</h3>
           <p>Un boîtier simple, compatible et facile à retrouver.</p>
@@ -1195,30 +1329,52 @@
 
     <section class="siri-section" aria-labelledby="siri-title">
       <div class="siri-grid">
-        <div class="siri-orb reveal" aria-hidden="true"></div>
-        <div class="siri-copy reveal delay-3">
+        <div class="siri-orb reveal slide-left" aria-hidden="true"></div>
+        <div class="siri-copy reveal slide-right delay-3">
           <span class="section-kicker">Built for Siri AI</span>
           <h2 id="siri-title">Ask naturally.</h2>
           <p>Une interaction plus fluide avec Siri, pensée pour rester dans le moment.</p>
           <div class="siri-pills" aria-label="Siri AI features">
-            <span class="siri-pill">Live translation</span>
-            <span class="siri-pill">Head gestures</span>
-            <span class="siri-pill">Siri AI</span>
+            <span class="siri-pill reveal slide-up delay-1">Live translation</span>
+            <span class="siri-pill reveal slide-up delay-2">Head gestures</span>
+            <span class="siri-pill reveal slide-up delay-3">Siri AI</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="companion-section" aria-labelledby="companion-title">
+      <div class="companion-grid">
+        <div class="companion-copy reveal slide-left">
+          <span class="section-kicker">iPhone</span>
+          <h2 id="companion-title">Le compagnon parfait de votre iPhone.</h2>
+          <p>Ouvrez le boîtier. Tout est prêt, instantanément.</p>
+          <div class="handoff-list" aria-label="iPhone features">
+            <div class="handoff-item reveal slide-up delay-1">Connexion instantanée</div>
+            <div class="handoff-item reveal slide-up delay-2">Bascule automatique</div>
+            <div class="handoff-item reveal slide-up delay-3">Localiser intégré</div>
+          </div>
+        </div>
+        <div class="iphone-stage reveal slide-right delay-2" aria-hidden="true">
+          <div class="iphone-frame">
+            <div class="iphone-screen iphone-screen--photo">
+              <img class="iphone-photo" src="IMG_0188.png" alt="" loading="lazy" decoding="async" />
+            </div>
           </div>
         </div>
       </div>
     </section>
 
     <section class="final-section" aria-labelledby="final-title">
-      <div class="final-inner reveal">
+      <div class="final-inner reveal slide-soft">
         <span class="section-kicker">AirPods Pro 3</span>
         <h2 id="final-title">Made for daily life.</h2>
         <p>Audio, santé et intelligence dans un format qui disparaît dès qu’il commence à fonctionner.</p>
         <div class="ecosystem-strip" aria-label="Apple ecosystem compatibility">
-          <div class="ecosystem-item">iPhone</div>
-          <div class="ecosystem-item">Mac</div>
-          <div class="ecosystem-item">iPad</div>
-          <div class="ecosystem-item">Watch</div>
+          <div class="ecosystem-item reveal slide-up delay-1">iPhone</div>
+          <div class="ecosystem-item reveal slide-up delay-2">Mac</div>
+          <div class="ecosystem-item reveal slide-up delay-3">iPad</div>
+          <div class="ecosystem-item reveal slide-up delay-4">Watch</div>
         </div>
         <div class="cta-row">
           <a class="cta cta--primary" href="https://www.apple.com/fr/shop/buy-airpods/airpods-pro-3" target="_blank" rel="noopener noreferrer">View pricing</a>
