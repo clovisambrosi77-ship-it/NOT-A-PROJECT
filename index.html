@@ -14,6 +14,14 @@
     --ai-gradient: linear-gradient(90deg, #ff4fd8, #b45cff, #6f7dff, #38bdf8, #6ee7ff, #ff9f0a, #ff4fd8);
   }
 
+  @font-face {
+    font-family: "SpAlterna";
+    src: url("SpAlterna-Regular.otf") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { height: 100%; scroll-behavior: smooth; }
   body {
@@ -47,6 +55,72 @@
   }
   #scene { position: fixed; inset: 0; display: block; z-index: 4; }
   .scroll-space { height: 680vh; pointer-events: none; }
+
+  .topbar {
+    position: fixed;
+    top: 18px;
+    left: clamp(18px, 4vw, 48px);
+    right: clamp(18px, 4vw, 48px);
+    z-index: 11;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    min-height: 46px;
+    padding: 0 8px 0 16px;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.34);
+    box-shadow: 0 18px 70px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(20px);
+    opacity: var(--chrome-opacity, 1);
+    transition: opacity 220ms ease, border-color 220ms ease, background 220ms ease;
+  }
+
+  .topbar__brand {
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 12px;
+    font-family: "SpAlterna", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .topbar__links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .topbar__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.64);
+    font-size: 12px;
+    font-weight: 780;
+    text-decoration: none;
+    transition: color 200ms ease, background 200ms ease;
+  }
+
+  .topbar__link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .topbar__cta {
+    color: #050505;
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  .topbar__cta:hover {
+    color: #050505;
+    background: #fff;
+  }
 
   .loading {
     position: fixed;
@@ -102,10 +176,10 @@
   .hero-copy {
     position: fixed;
     left: clamp(18px, 5vw, 72px);
-    top: clamp(18px, 7vh, 72px);
+    top: clamp(86px, 11vh, 116px);
     z-index: 8;
     width: min(430px, calc(100vw - 36px));
-    pointer-events: none;
+    pointer-events: auto;
     opacity: var(--copy-opacity, 1);
     transform: translateY(var(--copy-y, 0));
     will-change: opacity, transform;
@@ -122,8 +196,10 @@
 
   .hero-copy h1 {
     max-width: 11ch;
+    font-family: "SpAlterna", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 400;
     font-size: clamp(42px, 7vw, 96px);
-    line-height: 0.94;
+    line-height: 0.98;
     letter-spacing: 0;
   }
 
@@ -133,6 +209,102 @@
     color: rgba(255, 255, 255, 0.72);
     font-size: clamp(15px, 1.45vw, 19px);
     line-height: 1.45;
+  }
+
+  .ai-highlight {
+    position: relative;
+    display: inline-block;
+    background: var(--ai-gradient);
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    filter: drop-shadow(0 0 16px rgba(139, 92, 255, 0.2));
+    animation: hueShift 7s linear infinite;
+  }
+
+  .ai-highlight::after {
+    content: "";
+    position: absolute;
+    left: 3%;
+    right: 3%;
+    bottom: 0.04em;
+    height: 0.16em;
+    border-radius: 999px;
+    background: var(--ai-gradient);
+    opacity: 0.28;
+    filter: blur(8px);
+    z-index: -1;
+  }
+
+  .hero-actions {
+    margin-top: 26px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .hero-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: rgba(255, 255, 255, 0.88);
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 13px;
+    font-weight: 850;
+    text-decoration: none;
+    backdrop-filter: blur(14px);
+    transition: transform 220ms ease, background 220ms ease, color 220ms ease;
+  }
+
+  .hero-action:hover {
+    transform: translateY(-2px);
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .hero-action--primary {
+    border-color: transparent;
+    color: #050505;
+    background: rgba(255, 255, 255, 0.92);
+  }
+
+  .hero-action--primary:hover {
+    color: #050505;
+    background: #fff;
+  }
+
+  .scroll-hint {
+    position: fixed;
+    left: 50%;
+    bottom: 42px;
+    z-index: 8;
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+    color: rgba(255, 255, 255, 0.56);
+    font-size: 11px;
+    font-weight: 820;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: var(--hint-opacity, 1);
+    transform: translateX(-50%);
+    pointer-events: none;
+    transition: opacity 220ms ease;
+  }
+
+  .scroll-hint::after {
+    content: "";
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.74), transparent);
+    animation: hintDrop 1.8s ease-in-out infinite;
   }
 
   .progress {
@@ -170,12 +342,13 @@
     height: 100%;
     transform: scaleX(var(--progress, 0));
     transform-origin: left center;
-    background: var(--ai-gradient);
-    box-shadow: 0 0 22px rgba(111, 125, 255, 0.52), 0 0 30px rgba(255, 159, 10, 0.18);
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.22);
     will-change: transform;
   }
 
   .footer-credit {
+    display: none;
     position: fixed;
     top: 24px;
     right: clamp(18px, 4vw, 48px);
@@ -210,6 +383,22 @@
     display: grid;
     align-items: center;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .story-section::before,
+  .siri-section::before,
+  .companion-section::before,
+  .final-section::before {
+    content: "";
+    position: absolute;
+    left: clamp(20px, 6vw, 88px);
+    right: clamp(20px, 6vw, 88px);
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+    pointer-events: none;
   }
 
   .reveal {
@@ -268,14 +457,26 @@
     text-transform: uppercase;
   }
 
+  .section-kicker::before {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    margin-right: 10px;
+    vertical-align: middle;
+    background: rgba(255, 255, 255, 0.38);
+    opacity: 1;
+  }
+
   .story-copy h2,
   .siri-copy h2,
   .companion-copy h2,
   .final-section h2 {
+    font-family: "SpAlterna", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     font-size: clamp(42px, 5.6vw, 82px);
-    line-height: 0.98;
+    line-height: 1.02;
     letter-spacing: 0;
-    font-weight: 850;
+    font-weight: 400;
     text-wrap: balance;
   }
 
@@ -323,8 +524,8 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--accent-warm), var(--accent-a), var(--accent-c));
-    box-shadow: 0 0 20px rgba(139, 92, 255, 0.58), 0 0 18px rgba(255, 159, 10, 0.18);
+    background: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.18);
     flex: 0 0 auto;
   }
 
@@ -575,8 +776,8 @@
     padding: clamp(24px, 5vw, 56px);
     background:
       radial-gradient(circle at 50% 50%, rgba(111, 125, 255, 0.18), transparent 18rem),
-      radial-gradient(circle at 18% 24%, rgba(255, 79, 216, 0.1), transparent 18rem),
-      radial-gradient(circle at 80% 65%, rgba(56, 189, 248, 0.12), transparent 16rem),
+      radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.055), transparent 18rem),
+      radial-gradient(circle at 80% 65%, rgba(255, 255, 255, 0.06), transparent 16rem),
       linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.018));
   }
 
@@ -584,7 +785,7 @@
     height: clamp(56px, 8vw, 86px);
     border-radius: 999px;
     background:
-      linear-gradient(90deg, rgba(255, 159, 10, 0.16), rgba(255, 79, 216, 0.22), rgba(139, 92, 255, 0.44), rgba(56, 189, 248, 0.26)),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.08)),
       repeating-linear-gradient(90deg, transparent 0 18px, rgba(255, 255, 255, 0.12) 18px 20px);
     transform: scaleX(var(--wave-scale, 1));
     transform-origin: center;
@@ -628,7 +829,7 @@
     right: -70px;
     top: -80px;
     border-radius: 50%;
-    background: rgba(255, 159, 10, 0.12);
+    background: rgba(255, 255, 255, 0.06);
     filter: blur(30px);
     pointer-events: none;
   }
@@ -640,8 +841,8 @@
     right: 0;
     top: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--accent-a), var(--accent-b), var(--accent-c));
-    opacity: 0.38;
+    background: rgba(255, 255, 255, 0.26);
+    opacity: 1;
   }
 
   .spec-card:hover {
@@ -905,9 +1106,21 @@
   }
 
   .cta--primary {
-    border-color: transparent;
-    background: var(--ai-gradient);
-    color: #050505;
+    border-color: rgba(255, 255, 255, 0.22);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.075));
+    color: #fff;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(18px);
+  }
+
+  .cta--primary:hover {
+    border-color: rgba(255, 255, 255, 0.34);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.1));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      0 16px 44px rgba(139, 92, 255, 0.16);
   }
 
   @media (max-width: 720px) {
@@ -924,13 +1137,41 @@
       background-size: 56px 56px;
     }
     .hero-copy {
-      top: 22px;
+      top: 76px;
+    }
+    .topbar {
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      min-height: 42px;
+      padding-left: 14px;
+    }
+    .topbar__links .topbar__link:not(.topbar__cta) {
+      display: none;
+    }
+    .topbar__brand {
+      font-size: 11px;
+    }
+    .topbar__cta {
+      min-height: 30px;
+      padding: 0 11px;
     }
     .hero-copy h1 {
       font-size: clamp(42px, 15vw, 72px);
     }
     .hero-copy p {
       max-width: 24ch;
+    }
+    .hero-actions {
+      margin-top: 18px;
+    }
+    .hero-action {
+      min-height: 38px;
+      padding: 0 13px;
+      font-size: 12px;
+    }
+    .scroll-hint {
+      display: none;
     }
     .bg-text {
       font-size: 21vw;
@@ -1173,6 +1414,11 @@
     100% { background-position: 300% 50%; }
   }
 
+  @keyframes hintDrop {
+    0%, 100% { transform: scaleY(0.35); opacity: 0.38; }
+    50% { transform: scaleY(1); opacity: 0.9; }
+  }
+
   @keyframes healthFloat {
     0%, 100% { transform: translateY(0) scale(1); }
     50% { transform: translateY(-6px) scale(1.02); }
@@ -1224,13 +1470,27 @@
 </head>
 <body>
   <div class="loading" id="loading">Chargement du modèle...</div>
+  <nav class="topbar" aria-label="Navigation">
+    <a class="topbar__brand" href="#">AirPods Pro 3</a>
+    <div class="topbar__links">
+      <a class="topbar__link" href="#health">Health</a>
+      <a class="topbar__link" href="#audio">Audio</a>
+      <a class="topbar__link" href="#iphone">iPhone</a>
+      <a class="topbar__link topbar__cta" href="https://www.apple.com/fr/shop/buy-airpods/airpods-pro-3" target="_blank" rel="noopener noreferrer">View pricing</a>
+    </div>
+  </nav>
   <section class="hero-copy" id="heroCopy" aria-label="AirPods Pro">
     <div class="kicker">AirPods Pro 3</div>
-    <h1>Simply powerful.</h1>
-    <p>Son immersif. Santé intégrée. Intelligence fluide.</p>
+    <h1>Simply <span class="ai-highlight">powerful.</span></h1>
+    <p>Son immersif. <span class="ai-highlight">Santé</span> intégrée. Intelligence fluide.</p>
+    <div class="hero-actions">
+      <a class="hero-action hero-action--primary" href="https://www.apple.com/fr/shop/buy-airpods/airpods-pro-3" target="_blank" rel="noopener noreferrer">View pricing</a>
+      <a class="hero-action" href="#health">Explore</a>
+    </div>
   </section>
   <div class="bg-text" id="bgText">BUILT FOR APPLE INTELLIGENCE</div>
   <div class="chapter" id="chapter">Health</div>
+  <div class="scroll-hint" id="scrollHint">Scroll</div>
   <div class="progress" aria-hidden="true"><div class="progress__bar"></div></div>
   <canvas id="scene"></canvas>
 
@@ -1238,11 +1498,11 @@
   <div class="scroll-space"></div>
 
   <main class="product-story">
-    <section class="story-section" aria-labelledby="design-title">
+    <section class="story-section" id="health" aria-labelledby="design-title">
       <div class="story-grid">
         <div class="story-copy reveal slide-left">
           <span class="section-kicker">Health</span>
-          <h2 id="design-title">Listen to your body.</h2>
+          <h2 id="design-title">Listen to your <span class="ai-highlight">body.</span></h2>
           <p>Un suivi santé discret, pensé pour accompagner l’effort sans interrompre l’écoute.</p>
           <div class="feature-list">
             <div class="feature-row reveal slide-up delay-1"><span class="feature-dot"></span><span>Fréquence cardiaque</span></div>
@@ -1282,7 +1542,7 @@
       </div>
     </section>
 
-    <section class="story-section" aria-labelledby="sound-title">
+    <section class="story-section" id="audio" aria-labelledby="sound-title">
       <div class="story-grid story-grid--reverse">
         <div class="visual-panel sound-panel reveal slide-left delay-2" aria-hidden="true">
           <div class="wave"></div>
@@ -1293,7 +1553,7 @@
         </div>
         <div class="story-copy reveal slide-right delay-3">
           <span class="section-kicker">Audio</span>
-          <h2 id="sound-title">More sound. Less noise.</h2>
+          <h2 id="sound-title">More sound. Less <span class="ai-highlight">noise.</span></h2>
           <p>Une scène plus large, des détails plus nets, et un silence qui laisse respirer la musique.</p>
           <div class="feature-list">
             <div class="feature-row reveal slide-up delay-1"><span class="feature-dot"></span><span>Réduction de bruit active</span></div>
@@ -1306,7 +1566,7 @@
     <section class="story-section" aria-labelledby="case-title">
       <div class="story-copy story-copy--wide reveal slide-left">
         <span class="section-kicker">Everyday</span>
-        <h2 id="case-title">Ready all day.</h2>
+          <h2 id="case-title">Ready <span class="ai-highlight">all day.</span></h2>
       </div>
       <div class="spec-grid">
         <article class="spec-card reveal slide-up delay-1">
@@ -1332,8 +1592,8 @@
         <div class="siri-orb reveal slide-left" aria-hidden="true"></div>
         <div class="siri-copy reveal slide-right delay-3">
           <span class="section-kicker">Built for Siri AI</span>
-          <h2 id="siri-title">Ask naturally.</h2>
-          <p>Une interaction plus fluide avec Siri, pensée pour rester dans le moment.</p>
+          <h2 id="siri-title">Ask <span class="ai-highlight">naturally.</span></h2>
+          <p>Une interaction plus fluide avec <span class="ai-highlight">Siri</span>, pensée pour rester dans le moment.</p>
           <div class="siri-pills" aria-label="Siri AI features">
             <span class="siri-pill reveal slide-up delay-1">Live translation</span>
             <span class="siri-pill reveal slide-up delay-2">Head gestures</span>
@@ -1343,11 +1603,11 @@
       </div>
     </section>
 
-    <section class="companion-section" aria-labelledby="companion-title">
+    <section class="companion-section" id="iphone" aria-labelledby="companion-title">
       <div class="companion-grid">
         <div class="companion-copy reveal slide-left">
           <span class="section-kicker">iPhone</span>
-          <h2 id="companion-title">Le compagnon parfait de votre iPhone.</h2>
+          <h2 id="companion-title">Le compagnon parfait de votre <span class="ai-highlight">iPhone.</span></h2>
           <p>Ouvrez le boîtier. Tout est prêt, instantanément.</p>
           <div class="handoff-list" aria-label="iPhone features">
             <div class="handoff-item reveal slide-up delay-1">Connexion instantanée</div>
@@ -1368,7 +1628,7 @@
     <section class="final-section" aria-labelledby="final-title">
       <div class="final-inner reveal slide-soft">
         <span class="section-kicker">AirPods Pro 3</span>
-        <h2 id="final-title">Made for daily life.</h2>
+        <h2 id="final-title">Made for <span class="ai-highlight">daily life.</span></h2>
         <p>Audio, santé et intelligence dans un format qui disparaît dès qu’il commence à fonctionner.</p>
         <div class="ecosystem-strip" aria-label="Apple ecosystem compatibility">
           <div class="ecosystem-item reveal slide-up delay-1">iPhone</div>
@@ -1464,6 +1724,54 @@
     softGlow.position.set(-3, 1.5, 4);
     scene.add(softGlow);
 
+    const textReflectMagenta = new THREE.PointLight(0xff4fd8, 0, 14);
+    const textReflectCyan = new THREE.PointLight(0x38bdf8, 0, 14);
+    const textReflectWarm = new THREE.PointLight(0xff9f0a, 0, 10);
+    textReflectMagenta.position.set(-2.8, 0.6, 3.2);
+    textReflectCyan.position.set(2.8, 0.55, 3.1);
+    textReflectWarm.position.set(0.2, -0.15, 2.4);
+    scene.add(textReflectMagenta, textReflectCyan, textReflectWarm);
+
+    function makeGlowTexture(color) {
+      const size = 256;
+      const cv = document.createElement('canvas');
+      cv.width = cv.height = size;
+      const ctx = cv.getContext('2d');
+      const grad = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+      grad.addColorStop(0, color);
+      grad.addColorStop(0.34, color.replace('0.9', '0.34'));
+      grad.addColorStop(1, color.replace('0.9', '0'));
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, size, size);
+      const texture = new THREE.CanvasTexture(cv);
+      texture.colorSpace = THREE.SRGBColorSpace;
+      return texture;
+    }
+
+    const textGlowGroup = new THREE.Group();
+    textGlowGroup.renderOrder = 5;
+    scene.add(textGlowGroup);
+
+    const textGlowSprites = [
+      { texture: makeGlowTexture('rgba(255, 79, 216, 0.9)'), position: [-1.08, 0.74, 2.2], scale: [2.45, 1.05, 1] },
+      { texture: makeGlowTexture('rgba(56, 189, 248, 0.9)'), position: [1.08, 0.72, 2.24], scale: [2.55, 1.0, 1] },
+      { texture: makeGlowTexture('rgba(255, 159, 10, 0.9)'), position: [0.1, 0.34, 2.14], scale: [1.7, 0.7, 1] },
+    ].map(({ texture, position, scale }) => {
+      const material = new THREE.SpriteMaterial({
+        map: texture,
+        transparent: true,
+        opacity: 0,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        depthTest: true,
+      });
+      const sprite = new THREE.Sprite(material);
+      sprite.position.set(...position);
+      sprite.scale.set(...scale);
+      textGlowGroup.add(sprite);
+      return sprite;
+    });
+
     scene.add(new THREE.AmbientLight(0xffffff, 0.35));
 
     // --- Conteneur du modèle (piloté par le scroll) ---
@@ -1483,6 +1791,10 @@
     const SETTLE_INWARD = 0.044; // recentrage vers les puits pendant la descente
     const SETTLE_BACK = 0.095; // recule les écouteurs pour dégager le bord avant
     const ENTRY_PITCH = -Math.PI / 6; // tilt arrière de 30° visible sur la vue de côté
+    const POD_ASYMMETRY = {
+      left: { delay: -0.028, drop: 1.015, arcX: -0.026, arcY: 0.035, arcZ: 0.018, pitch: -0.045, yaw: 0.04, roll: -0.025 },
+      right: { delay: 0.036, drop: 0.985, arcX: 0.018, arcY: -0.012, arcZ: -0.026, pitch: 0.028, yaw: -0.052, roll: 0.035 },
+    };
 
     const loadingEl = document.getElementById('loading');
 
@@ -1572,6 +1884,8 @@
           y: p.position.y,
           z: p.position.z,
           rx: p.rotation.x,
+          ry: p.rotation.y,
+          rz: p.rotation.z,
           side: Math.sign(p.position.x) || 1,
         }));
 
@@ -1643,6 +1957,7 @@
     let heroRenderSettled = false;
     const bgText = document.getElementById('bgText');
     const heroCopy = document.getElementById('heroCopy');
+    const scrollHint = document.getElementById('scrollHint');
     const chapter = document.getElementById('chapter');
     const scrollSpace = document.querySelector('.scroll-space');
     const chapterLabels = ['Health', 'Silence', 'Siri AI'];
@@ -1711,6 +2026,7 @@
       document.body.style.setProperty('--progress', scrollEased.toFixed(4));
       document.body.style.setProperty('--page-progress', pageProgress.toFixed(4));
       document.body.style.setProperty('--chrome-opacity', chromeOpacity.toFixed(3));
+      document.body.style.setProperty('--hint-opacity', (1 - smoothstep(0.015, 0.08, scrollEased)).toFixed(3));
 
       if (heroCopy) {
         const heroExit = smoothstep(0.03, 0.24, scrollEased);
@@ -1733,24 +2049,34 @@
         const base = podBase[i];
         if (!base) continue;
 
-        const sideDelay = base.side > 0 ? 0.015 : -0.015;
-        const individualProgress = smoothstep(0.08 + sideDelay, 0.88 + sideDelay, scrollEased);
-        const drop = individualProgress * podDropLocal;
+        const asym = base.side < 0 ? POD_ASYMMETRY.left : POD_ASYMMETRY.right;
+        const individualProgress = smoothstep(0.08 + asym.delay, 0.88 + asym.delay, scrollEased);
+        const travelArc = Math.sin(individualProgress * Math.PI);
+        const drop = individualProgress * podDropLocal + podDropLocal * (asym.drop - 1) * travelArc * 0.45;
+        const microDrift = Math.sin((scrollEased + i * 0.17) * Math.PI * 2) * travelArc;
 
-        podPivots[i].position.x = base.x - base.side * SETTLE_INWARD * settle;
-        podPivots[i].position.y = base.y - drop;
-        podPivots[i].position.z = base.z - SETTLE_BACK * settle;
-        podPivots[i].rotation.x = base.rx + ENTRY_PITCH * settle;
-        podPivots[i].rotation.z = base.side * (TILT_FIX + (FINAL_TILT_FIX - TILT_FIX) * settle);
+        podPivots[i].visible = true;
+        podPivots[i].position.x = base.x - base.side * SETTLE_INWARD * settle + asym.arcX * travelArc;
+        podPivots[i].position.y = base.y - drop + asym.arcY * travelArc;
+        podPivots[i].position.z = base.z - SETTLE_BACK * settle + asym.arcZ * travelArc;
+        podPivots[i].rotation.x = base.rx + ENTRY_PITCH * settle + asym.pitch * travelArc;
+        podPivots[i].rotation.y = base.ry + asym.yaw * travelArc + microDrift * 0.018;
+        podPivots[i].rotation.z = base.rz + base.side * (FINAL_TILT_FIX - TILT_FIX) * settle + asym.roll * travelArc;
+        podPivots[i].scale.setScalar(1);
       }
 
       // Le boîtier (et les écouteurs) effectuent un tour complet (360°), sans à-coups.
       const rotationProgress = smoothstep(0.02, 0.98, scrollEased);
       const motionScale = prefersReducedMotion ? 0.35 : 1;
-      podsGroup.rotation.y = rotationProgress * Math.PI * 2 + Math.sin(scrollEased * Math.PI) * 0.08 * motionScale;
-      podsGroup.rotation.x = -0.035 + Math.sin(scrollEased * Math.PI * 2) * 0.025 * motionScale + pointerYEased * 0.018;
-      podsGroup.rotation.z = pointerXEased * 0.018;
-      podsGroup.position.y = (window.innerWidth < 720 ? 0.02 : 0.16) + Math.sin(scrollEased * Math.PI) * 0.12 * motionScale;
+      const heroRotY = rotationProgress * Math.PI * 2 + Math.sin(scrollEased * Math.PI) * 0.08 * motionScale;
+      const heroRotX = -0.035 + Math.sin(scrollEased * Math.PI * 2) * 0.025 * motionScale + pointerYEased * 0.018;
+      const heroRotZ = pointerXEased * 0.018;
+      const heroY = (window.innerWidth < 720 ? 0.02 : 0.16) + Math.sin(scrollEased * Math.PI) * 0.12 * motionScale;
+      podsGroup.rotation.y = heroRotY;
+      podsGroup.rotation.x = heroRotX;
+      podsGroup.rotation.z = heroRotZ;
+      podsGroup.position.x = 0;
+      podsGroup.position.y = heroY;
 
       camera.position.x = cameraBase.x + pointerXEased * 0.08;
       camera.position.y = cameraBase.y - pointerYEased * 0.05 + Math.sin(scrollEased * Math.PI) * 0.08 * motionScale;
@@ -1767,6 +2093,8 @@
 
       // Texte d'arrière-plan : invisible au début et à la fin, il traverse
       // l'écran (et passe derrière les AirPods) pendant le défilement.
+      let bgTextOpacity = 0;
+      let bgTextSweep = 0;
       if (bgText) {
         const p = scrollEased;
         let op;
@@ -1774,10 +2102,30 @@
         else if (p > 0.8) op = Math.max(0, (1 - p) / 0.2); // disparition
         else op = 1;
         const x = (0.5 - p) * 400; // balayage horizontal (vw)
+        bgTextOpacity = op;
+        bgTextSweep = x / 400;
         bgText.style.opacity = op.toFixed(3);
         bgText.style.transform = `translate(calc(-50% + ${x.toFixed(2)}vw), -50%)`;
         bgText.style.setProperty('--text-blur', `${(Math.abs(p - 0.5) * 5).toFixed(2)}px`);
       }
+
+      const reflectionPower = bgTextOpacity * (1 - smoothstep(0.94, 1, scrollEased));
+      const sweepOffset = bgTextSweep * 1.8;
+      textReflectMagenta.intensity = reflectionPower * 6.2;
+      textReflectCyan.intensity = reflectionPower * 5.8;
+      textReflectWarm.intensity = reflectionPower * 1.1;
+      textReflectMagenta.position.x = -1.9 + sweepOffset;
+      textReflectCyan.position.x = 1.9 + sweepOffset;
+      textReflectWarm.position.x = 0.2 + sweepOffset * 0.55;
+      textReflectMagenta.position.y = 0.62 + Math.sin(scrollEased * Math.PI * 2) * 0.18;
+      textReflectCyan.position.y = 0.42 + Math.cos(scrollEased * Math.PI * 2) * 0.16;
+      textGlowGroup.visible = reflectionPower > 0.01;
+      textGlowGroup.position.x = sweepOffset * 0.34;
+      textGlowGroup.position.y = Math.sin(scrollEased * Math.PI * 2) * 0.04;
+      textGlowSprites.forEach((sprite, index) => {
+        const sideWeight = index === 0 ? smoothstep(-0.55, 0.2, bgTextSweep) : index === 1 ? smoothstep(0.55, -0.2, bgTextSweep) : 0.72;
+        sprite.material.opacity = reflectionPower * sideWeight * (index === 2 ? 0.08 : 0.22);
+      });
 
       const heroSettling = Math.abs(scrollTarget - scrollEased) > 0.002;
       if (scrollTarget < 0.999) heroRenderSettled = false;
