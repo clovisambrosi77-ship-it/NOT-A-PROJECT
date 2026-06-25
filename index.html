@@ -107,9 +107,14 @@
     transition: color 200ms ease, background 200ms ease;
   }
 
-  .topbar__link:hover {
+  .topbar__link:hover,
+  .topbar__link.is-active {
     color: #fff;
     background: rgba(255, 255, 255, 0.08);
+  }
+
+  .topbar__link.is-active {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
   }
 
   .topbar__cta {
@@ -542,6 +547,29 @@
     transition: transform 700ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 700ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  .visual-panel::after,
+  .spec-card::after,
+  .health-card::before,
+  .ecosystem-item::after,
+  .iphone-frame::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.16), transparent 34%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 260ms ease;
+  }
+
+  .visual-panel:hover::after,
+  .spec-card:hover::after,
+  .health-card:hover::before,
+  .ecosystem-item:hover::after,
+  .iphone-frame:hover::after {
+    opacity: 1;
+  }
+
   .visual-panel:hover {
     transform: translateY(-6px);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 34px 110px rgba(0, 0, 0, 0.5);
@@ -824,14 +852,19 @@
   .spec-card::after {
     content: "";
     position: absolute;
-    width: 140px;
-    height: 140px;
-    right: -70px;
-    top: -80px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.06);
-    filter: blur(30px);
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.15), transparent 36%);
+    opacity: 0;
     pointer-events: none;
+    transition: opacity 260ms ease;
+  }
+
+  .spec-card .spec-value,
+  .spec-card h3,
+  .spec-card p {
+    position: relative;
+    z-index: 1;
   }
 
   .spec-card::before {
@@ -999,6 +1032,7 @@
     box-shadow:
       0 34px 90px rgba(0, 0, 0, 0.48),
       0 0 0 1px rgba(255, 255, 255, 0.12);
+    overflow: hidden;
   }
 
   .iphone-screen {
@@ -1062,6 +1096,8 @@
   }
 
   .ecosystem-item {
+    position: relative;
+    overflow: hidden;
     min-height: 82px;
     display: grid;
     place-items: center;
@@ -1137,7 +1173,11 @@
       background-size: 56px 56px;
     }
     .hero-copy {
-      top: 76px;
+      top: 74px;
+      left: 24px;
+      right: 24px;
+      width: auto;
+      text-align: center;
     }
     .topbar {
       top: 12px;
@@ -1157,17 +1197,22 @@
       padding: 0 11px;
     }
     .hero-copy h1 {
-      font-size: clamp(42px, 15vw, 72px);
+      max-width: none;
+      font-size: clamp(36px, 12vw, 48px);
+      line-height: 0.92;
     }
     .hero-copy p {
-      max-width: 24ch;
+      max-width: 27ch;
+      margin: 10px auto 0;
+      font-size: 13px;
+      line-height: 1.35;
     }
     .hero-actions {
-      margin-top: 18px;
+      display: none;
     }
     .hero-action {
-      min-height: 38px;
-      padding: 0 13px;
+      min-height: 34px;
+      padding: 0 12px;
       font-size: 12px;
     }
     .scroll-hint {
@@ -1687,15 +1732,15 @@
       const narrow = window.innerWidth < 720;
       camera.fov = narrow ? 48 : 38;
       camera.aspect = window.innerWidth / window.innerHeight;
-      cameraBase.set(0, narrow ? 1.3 : 1.48, narrow ? 8.2 : 6.58);
-      lookAtTarget.set(0, narrow ? 0.0 : 0.08, 0);
+      cameraBase.set(0, narrow ? 1.14 : 1.48, narrow ? 9.0 : 6.58);
+      lookAtTarget.set(0, narrow ? -0.08 : 0.08, 0);
       camera.position.copy(cameraBase);
       camera.lookAt(lookAtTarget);
       camera.updateProjectionMatrix();
 
-      const scale = narrow ? 0.86 : 1.08;
+      const scale = narrow ? 0.6 : 1.08;
       podsGroup.scale.setScalar(scale);
-      podsGroup.position.y = narrow ? 0.02 : 0.16;
+      podsGroup.position.y = narrow ? -0.34 : 0.16;
     }
 
     // --- Environment (reflets réalistes) ---
@@ -2007,6 +2052,31 @@
     }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
     revealEls.forEach((el) => revealObserver.observe(el));
 
+    const interactiveSurfaces = document.querySelectorAll('.visual-panel, .spec-card, .health-card, .ecosystem-item, .iphone-frame');
+    interactiveSurfaces.forEach((el) => {
+      el.addEventListener('pointermove', (event) => {
+        const rect = el.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width) * 100;
+        const y = ((event.clientY - rect.top) / rect.height) * 100;
+        el.style.setProperty('--mx', `${x.toFixed(2)}%`);
+        el.style.setProperty('--my', `${y.toFixed(2)}%`);
+      }, { passive: true });
+    });
+
+    const navLinks = [...document.querySelectorAll('.topbar__link[href^="#"]')];
+    const navTargets = navLinks
+      .map((link) => ({ link, target: document.querySelector(link.getAttribute('href')) }))
+      .filter((item) => item.target);
+    const activeNavObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        navLinks.forEach((link) => link.classList.remove('is-active'));
+        const active = navTargets.find((item) => item.target === entry.target);
+        if (active) active.link.classList.add('is-active');
+      });
+    }, { threshold: 0.12, rootMargin: '-16% 0px -52% 0px' });
+    navTargets.forEach((item) => activeNavObserver.observe(item.target));
+
     // --- Animation loop (pilotée par le scroll) ---
     function animate() {
       requestAnimationFrame(animate);
@@ -2071,7 +2141,7 @@
       const heroRotY = rotationProgress * Math.PI * 2 + Math.sin(scrollEased * Math.PI) * 0.08 * motionScale;
       const heroRotX = -0.035 + Math.sin(scrollEased * Math.PI * 2) * 0.025 * motionScale + pointerYEased * 0.018;
       const heroRotZ = pointerXEased * 0.018;
-      const heroY = (window.innerWidth < 720 ? 0.02 : 0.16) + Math.sin(scrollEased * Math.PI) * 0.12 * motionScale;
+      const heroY = (window.innerWidth < 720 ? -0.34 : 0.16) + Math.sin(scrollEased * Math.PI) * 0.12 * motionScale;
       podsGroup.rotation.y = heroRotY;
       podsGroup.rotation.x = heroRotX;
       podsGroup.rotation.z = heroRotZ;
